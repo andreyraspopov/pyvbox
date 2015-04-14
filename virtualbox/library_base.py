@@ -59,6 +59,8 @@ class Enum(object):
     """Enum objects provide a container for VirtualBox enumerations"""
     _enums = {}
     def __init__(self, value):
+        #here is a problem with *** TypeError: unhashable instance from sdk, consider to use int
+        value = int(value)
         if value not in self._lookup_label:
             raise ValueError("Can not find enumeration where value=%s" % value)
         self._value = value
@@ -123,7 +125,7 @@ class Interface(object):
             if isinstance(value, Interface):
                 return value._i
             elif isinstance(value, Enum):
-                return int(value)
+                return value
             else:
                 return value
         if isinstance(value, list):

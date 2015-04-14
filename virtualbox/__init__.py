@@ -114,7 +114,8 @@ class Manager(object):
 
     @manager.setter
     def manager(self, value):
-        "Set the manager object in the global _manager dict."
+        """Set the manager object in the global _manager dict."""
+        
         pid = current_process().ident
         if pid not in _manager:
             _manager[pid] = value 
@@ -126,7 +127,8 @@ class Manager(object):
         
         :rtype: library.IVirtualBox
         """
-        return VirtualBox(interface=self.manager.getVirtualBox())
+        self.manager.vbox = self.manager.getVirtualBox()
+        return VirtualBox(interface=self.manager.vbox)
 
     def get_session(self):
         """Return a Session interface
@@ -138,7 +140,9 @@ class Manager(object):
             manager = getattr(self.manager, 'mgr')
         else:
             manager = self.manager
-        return Session(interface=manager.getSessionObject(None))
+
+        interface = manager.getSessionObject(manager.vbox)
+        return Session(interface)
 
     def cast_object(self, interface_object, interface_class):
         """Cast the obj to the interface class
